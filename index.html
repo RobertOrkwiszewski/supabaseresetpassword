@@ -11,7 +11,7 @@
   <p id="status"></p>
 
   <script>
-  const supabase = supabase.createClient(
+  const client = supabase.createClient(
     'https://jotkgecvonqxocalphlo.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvdGtnZWN2b25xeG9jYWxwaGxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1ODQ5MTUsImV4cCI6MjA2MzE2MDkxNX0._hMa_1mfxT7Ozo4HRN098d0alt7kKZPxkSRknuquH-o'
   );
@@ -21,31 +21,19 @@
     const params = new URLSearchParams(hash);
     const accessToken = params.get("access_token");
 
-    console.log("Access Token:", accessToken);
-
     if (!accessToken) {
-      document.getElementById("status").innerText = "❌ Missing access token.";
+      document.getElementById("status").innerText = "Missing access token.";
       return;
     }
 
     const newPassword = document.getElementById("new-password").value;
-    console.log("New Password:", newPassword);
 
-    try {
-      const { data, error } = await supabase.auth.updateUser(
-        { password: newPassword },
-        { accessToken }
-      );
+    const { data, error } = await client.auth.updateUser(
+      { password: newPassword },
+      { accessToken }
+    );
 
-      console.log("Update Result:", { data, error });
-
-      document.getElementById("status").innerText = error
-        ? `❌ ${error.message}`
-        : "✅ Password updated!";
-    } catch (err) {
-      console.error("Exception:", err);
-      document.getElementById("status").innerText = "❌ Unexpected error.";
-    }
+    document.getElementById("status").innerText = error ? error.message : "Password updated!";
   }
 </script>
 </body>
